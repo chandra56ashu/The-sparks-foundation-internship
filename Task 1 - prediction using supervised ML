@@ -1,0 +1,42 @@
+#load library and import data
+library(readr)
+student_scores <- read_csv("https://raw.githubusercontent.com/AdiPersonalWorks/Random/master/student_scores%20-%20student_scores.csv")
+View(student_scores)
+#use class to see the data type
+class(student_scores)
+# use str function see the structure of dataframe
+str(student_scores)
+# use head function to see the head of the data 
+head(student_scores)
+# scatter plot of data
+plot(x= student_scores$Hours, y= student_scores$Scores , xlab = "hours", ylab = "scores") 
+#load/install the libraries 
+library(rpart) #used for building classification and regression trees
+library(dplyr)  #used for  data manipulation
+library(caTools) #sample.split function is present in this package
+#split the data into two parts 
+set.seed(2)
+split_data <- sample.split(student_scores$Scores,SplitRatio = 0.80)
+split_data
+train_data <- subset(student_scores,split_data ==TRUE)
+test_data <- subset(student_scores,split_data == FALSE)
+#check the number of rows of test and train data
+nrow(train_data)
+nrow(test_data)
+#now create the model
+model <- lm(formula = Scores~Hours, data = train_data)
+#plot the model 
+plot(model)
+#summary of model
+summary(model)
+#predict the test_data
+prediction <- predict(model,test_data)
+#combine the test_data$scores and prediction to find error
+combined <- cbind(test_data,prediction)
+class(combined)
+# errors(Mean square error)
+MSE <- sqrt(mean((combined$Scores-combined$prediction)^2))
+MSE
+values <- as.data.frame(9.25)
+colnames(values) <- "Hours"
+predict(model,values)
