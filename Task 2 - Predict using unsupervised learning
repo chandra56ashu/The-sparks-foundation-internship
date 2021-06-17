@@ -1,0 +1,36 @@
+#load libraries  
+library(stats) #helps to execute k-means cluster analysis
+library(dplyr) #used for data manupulation 
+library(ggplot2) #helps in data visualization 
+library(ggfortify) #offers fortify and autoplot functions
+#import iris data 
+iris_data <-read.csv("C:/Users/chand/Downloads/iris.csv")
+head(iris_data)
+#convert data to unlabelled data
+my_data <- select(iris_data,c(2:5))
+head(my_data)
+# summary of unlabelled data 
+summary(my_data)
+#no. of rows and no.of columns 
+glimpse(my_data)
+#WSS plot to choose optimum number of clusters 
+#use WSS plot function for this 
+wssplot <- function(data, nc=15, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")
+  wss
+}
+wssplot(my_data)
+
+#K-means cluster 
+k_means <-kmeans(x= my_data,centers = 2)
+#evaluate cluster analysis 
+#plot k _means
+autoplot(k_means,my_data,frame = TRUE)
+#cluster centres 
+k_means$centers
+         
